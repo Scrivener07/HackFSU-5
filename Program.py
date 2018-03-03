@@ -30,6 +30,11 @@ class Application():
 						value.HotelColor
 					])
 
+	def Deserialize(self):
+		with open('Database.csv', newline='') as csvfile:
+			dbReader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+			for row in dbReader:
+				print(', '.join(row))
 
 # Database object for storing profile information.
 class Profile():
@@ -91,3 +96,4 @@ application.Add(mattProfile)
 application.Add(nathanProfile)
 
 application.Serialize()
+application.Deserialize()
