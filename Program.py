@@ -18,9 +18,9 @@ class Database():
 		return profile.UID
 
 	def SetProperty(self, password, variable, value):
-		for profile in self.Dictionary:
-			if profile.Password == password:
-				setattr(profile, variable, value)	
+		for profile in self.Dictionary.items():
+			if profile[1].Password == password:
+				setattr(profile[1], variable, value)	
 
 	def Serialize(self):
 		with open(self.FILENAME, 'w', newline='') as csvfile:
@@ -79,35 +79,21 @@ class Location(Enum):
 #----------------------------------------------------------
 
 database = Database()
-tommyKey = database.New("Tommy", 7314)
-johnnyKey = database.New("Johnny", 4979)
-donnyKey = database.New("Donny", 1147)
-tommyKey2 = database.New("Tommy 2", 7894)
-johnnyKey3 = database.New("Johnny 2", 4649)
-donnyKey4 = database.New("Donny 2", 1547)
+database.New("Tommy", 7314)
+database.New("Johnny", 4979)
+database.New("Donny", 1147)
+database.New("Mike", 7894)
+database.New("Taylor", 4649)
+database.New("Sammy", 1547)
+database.New("Kyle", 4401)
+database.New("Jonah", 2018)
+database.New("Matt", 1234)
+database.New("Nathan", 8975)
+database.New("Max", 8975)
+
+database.SetProperty(4401, "HomeValue", Preference.Fast) # Set the property of a profile.
+
+database.SetProperty(8975, "CarValue", Preference.Fast) # duplicates passwords?
 
 database.Serialize()
 database.Deserialize()
-
-
-
-kyleProfile = Profile("Kyle", 4401)
-kyleProfile.HomeValue = Preference.On
-kyleProfile.CarValue = Preference.Fast
-kyleProfile.HotelValue = Preference.Slow
-
-jonahProfile = Profile("Jonah", 2018)
-jonahProfile.HomeValue = Preference.Fast
-jonahProfile.CarValue = Preference.Slow
-jonahProfile.HotelValue = Preference.Off
-
-mattProfile = Profile("Matt", 1234)
-mattProfile.HomeValue = Preference.Slow
-mattProfile.CarValue = Preference.Off
-mattProfile.HotelValue = Preference.Fast
-
-nathanProfile = Profile("Nathan", 8975)
-nathanProfile.HomeValue = Preference.Slow
-nathanProfile.CarValue = Preference.On
-nathanProfile.HotelValue = Preference.Slow
-
