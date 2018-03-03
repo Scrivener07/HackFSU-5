@@ -2,19 +2,28 @@ import csv
 from enum import Enum
 from itertools import count
 
+# UpdateDB.Location | Store location on initialize
+
 class Database():
 	Dictionary = {}
 	FILENAME = "Database.csv"
 
 	def __init__(self):
-		self.defaultProfile = Profile("Dummy", 1000)
+		self.defaultProfile = Profile("Dummy", 0000)
 		self.Dictionary[self.defaultProfile.UID] = self.defaultProfile
 	
-	def Add(self, element):
-		self.Dictionary[element.UID] = element
+	def New(self, name, password):
+		profile = Profile(name, password)
+		self.Dictionary[profile.UID] = profile
+		return profile.UID
+
+	def SetProperty(self, password, variable, value):
+		for profile in self.Dictionary:
+			if profile.Password == password:
+				setattr(profile, variable, value)	
 
 	def Serialize(self):
-		with open(Database.FILENAME, 'w', newline='') as csvfile:
+		with open(self.FILENAME, 'w', newline='') as csvfile:
 			writer = csv.DictWriter(csvfile, delimiter=',', fieldnames=Profile.Fields)
 			writer.writeheader()
 
@@ -23,6 +32,7 @@ class Database():
 				print(str(value))
 				writer.writerow(
 					{
+						'UID': value.UID,
 						'Name': value.Name,
 						'Password': value.Password,
 						'Location': value.Location,
@@ -32,14 +42,14 @@ class Database():
 					})
 
 	def Deserialize(self):
-		with open(Database.FILENAME, newline='') as csvfile:
+		with open(self.FILENAME, newline='') as csvfile:
 			reader = csv.DictReader(csvfile)
 			for row in reader:
 				print(row['Name'], row['Password'], row['Location'], row['HomeValue'], row['CarValue'], row['HotelValue'])
 
 class Profile():
 	NextUID = count(-1)
-	Fields = ['Name', 'Password', 'Location', 'HomeValue', 'CarValue', 'HotelValue']
+	Fields = ['UID', 'Name', 'Password', 'Location', 'HomeValue', 'CarValue', 'HotelValue']
 	def __init__(self, name, password):
 		self.UID = next(self.NextUID)
 		self.Name = name
@@ -69,6 +79,17 @@ class Location(Enum):
 #----------------------------------------------------------
 
 database = Database()
+tommyKey = database.New("Tommy", 7314)
+johnnyKey = database.New("Johnny", 4979)
+donnyKey = database.New("Donny", 1147)
+tommyKey2 = database.New("Tommy 2", 7894)
+johnnyKey3 = database.New("Johnny 2", 4649)
+donnyKey4 = database.New("Donny 2", 1547)
+
+database.Serialize()
+database.Deserialize()
+
+
 
 kyleProfile = Profile("Kyle", 4401)
 kyleProfile.HomeValue = Preference.On
@@ -90,10 +111,3 @@ nathanProfile.HomeValue = Preference.Slow
 nathanProfile.CarValue = Preference.On
 nathanProfile.HotelValue = Preference.Slow
 
-database.Add(kyleProfile)
-database.Add(jonahProfile)
-database.Add(mattProfile)
-database.Add(nathanProfile)
-
-database.Serialize()
-database.Deserialize()
