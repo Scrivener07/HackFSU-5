@@ -2,44 +2,45 @@ import csv
 from enum import Enum
 from itertools import count
 
-# The context of the application contains the database.
-class Application():
-	Database = {}
+class Database():
+	Dictionary = {}
+	FILENAME = "Database.csv"
 
 	def __init__(self):
 		self.defaultProfile = Profile("Dummy", 1000)
-		self.Database[self.defaultProfile.UID] = self.defaultProfile
-
+		self.Dictionary[self.defaultProfile.UID] = self.defaultProfile
+	
 	def Add(self, element):
-		application.Database[element.UID] = element
+		database.Dictionary[element.UID] = element
 
 	def Serialize(self):
-		with open('Database.csv', 'w') as csvfile:
-			dbWriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+		with open(Database.FILENAME, 'w', newline='') as csvfile:
+			writer = csv.DictWriter(csvfile, delimiter=',', fieldnames=Profile.Fields)
+			writer.writeheader()
 
-			for key, value in Application.Database.items():	
+			for key, value in Database.Dictionary.items():
+				print(str(key))
 				print(str(value))
-				dbWriter.writerow(
-					[
-						key,
-						value.Name,
-						value.Password,
-						value.Location,
-						value.HomeColor,
-						value.CarColor,
-						value.HotelColor
-					])
+
+				writer.writerow(
+					{
+						'Name': value.Name,
+						'Password': value.Password,
+						'Location': value.Location,
+						'HomeColor': value.HomeColor,
+						'CarColor': value.CarColor,
+						'HotelColor': value.HotelColor
+					})
 
 	def Deserialize(self):
-		with open('Database.csv', newline='') as csvfile:
-			dbReader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-			for row in dbReader:
-				print(', '.join(row))
+		with open(Database.FILENAME, newline='') as csvfile:
+			reader = csv.DictReader(csvfile)
+			for row in reader:
+				print(row['Name'], row['Password'], row['Location'], row['HomeColor'], row['CarColor'], row['HotelColor'])
 
-# Database object for storing profile information.
 class Profile():
 	NextUID = count(-1)
-	
+	Fields = ['Name', 'Password', 'Location', 'HomeColor', 'CarColor', 'HotelColor']
 	def __init__(self, name, password):
 		self.UID = next(self.NextUID)
 		self.Name = name
@@ -51,7 +52,6 @@ class Profile():
 
 	def __str__(self):
 		return self.Name + " UID:" + str(self.UID)
-
 
 class Color(Enum):
 	Nill = 0
@@ -68,7 +68,7 @@ class Location(Enum):
 #----------------------------------------------------------
 #----------------------------------------------------------
 
-application = Application()
+database = Database()
 
 kyleProfile = Profile("Kyle", 4401)
 kyleProfile.HomeColor = Color.Yellow
@@ -90,10 +90,10 @@ nathanProfile.HomeColor = Color.Yellow
 nathanProfile.CarColor = Color.Red
 nathanProfile.HotelColor = Color.Blue
 
-application.Add(kyleProfile)
-application.Add(jonahProfile)
-application.Add(mattProfile)
-application.Add(nathanProfile)
+database.Add(kyleProfile)
+database.Add(jonahProfile)
+database.Add(mattProfile)
+database.Add(nathanProfile)
 
-application.Serialize()
-application.Deserialize()
+database.Serialize()
+database.Deserialize()
