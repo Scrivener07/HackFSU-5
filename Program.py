@@ -2,8 +2,6 @@ import csv
 from enum import Enum
 from itertools import count
 
-# UpdateDB.Location | Store location on initialize
-
 class Database():
 	Dictionary = {}
 	FILENAME = "Database.csv"
@@ -47,7 +45,7 @@ class Database():
 			for row in reader:
 				print(row['Name'], row['Password'], row['Location'], row['HomeValue'], row['CarValue'], row['HotelValue'])
 
-class Profile():
+class Profile(Database):
 	NextUID = count(-1)
 	Fields = ['UID', 'Name', 'Password', 'Location', 'HomeValue', 'CarValue', 'HotelValue']
 	def __init__(self, name, password):
@@ -75,10 +73,14 @@ class Location(Enum):
 	Car = 1
 	Hotel = 2
 
+
 #----------------------------------------------------------
 #----------------------------------------------------------
 
 database = Database()
+
+database.Deserialize() # read in existing database
+
 database.New("Tommy", 7314)
 database.New("Johnny", 4979)
 database.New("Donny", 1147)
@@ -89,10 +91,9 @@ database.New("Kyle", 4401)
 database.New("Jonah", 2018)
 database.New("Matt", 1234)
 database.New("Nathan", 8975)
-database.New("Max", 8975)
+database.New("Max", 8875)
 
 database.SetProperty(4401, "HomeValue", Preference.Fast) # Set the property of a profile.
-
 database.SetProperty(8975, "CarValue", Preference.Fast) # duplicates passwords?
 
 database.Serialize()
