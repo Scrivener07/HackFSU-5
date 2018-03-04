@@ -13,12 +13,19 @@ class Database():
 	def New(self, name, password):
 		profile = Profile(name, password)
 		self.Dictionary[profile.UID] = profile
+		self.Serialize()
 		return profile.UID
 
-	def SetProperty(self, password, variable, value):
+	def SetPropertyFor(self, password, variable, value):
 		for profile in self.Dictionary.items():
 			if profile[1].Password == password:
-				setattr(profile[1], variable, value)	
+				setattr(profile[1], variable, value)
+		self.Serialize()
+
+	def GetPropertyFor(self, password, variable):
+		for profile in self.Dictionary.items():
+			if profile[1].Password == password:
+				return getattr(profile[1], variable)
 
 	def Serialize(self):
 		with open(self.FILENAME, 'w', newline='') as csvfile:
@@ -45,7 +52,7 @@ class Database():
 			for row in reader:
 				print(row['Name'], row['Password'], row['Location'], row['HomeValue'], row['CarValue'], row['HotelValue'])
 
-class Profile(Database):
+class Profile():
 	NextUID = count(-1)
 	Fields = ['UID', 'Name', 'Password', 'Location', 'HomeValue', 'CarValue', 'HotelValue']
 	def __init__(self, name, password):
@@ -73,28 +80,34 @@ class Location(Enum):
 	Car = 1
 	Hotel = 2
 
-
 #----------------------------------------------------------
 #----------------------------------------------------------
 
 database = Database()
-
-database.Deserialize() # read in existing database
-
-database.New("Tommy", 7314)
-database.New("Johnny", 4979)
-database.New("Donny", 1147)
-database.New("Mike", 7894)
-database.New("Taylor", 4649)
-database.New("Sammy", 1547)
-database.New("Kyle", 4401)
-database.New("Jonah", 2018)
-database.New("Matt", 1234)
-database.New("Nathan", 8975)
-database.New("Max", 8875)
-
-database.SetProperty(4401, "HomeValue", Preference.Fast) # Set the property of a profile.
-database.SetProperty(8975, "CarValue", Preference.Fast) # duplicates passwords?
-
-database.Serialize()
 database.Deserialize()
+
+
+def Initialize(value):
+	print(value)
+
+def Seed():
+	database.New("Tommy", 7314)
+	database.New("Johnny", 4979)
+	database.New("Donny", 1147)
+	database.New("Mike", 7894)
+	database.New("Taylor", 4649)
+	database.New("Sammy", 1547)
+	database.New("Jonah", 2018)
+	database.New("Matt", 1234)
+	database.New("Nathan", 8975)
+	database.New("Max", 8875)
+
+database.New("Kyle", 4401)
+
+database.SetPropertyFor(4401, "HomeValue", Preference.Slow) 
+database.SetPropertyFor(4401, "CarValue", Preference.Fast)
+database.SetPropertyFor(4401, "HotelValue", Preference.On) 
+
+print("Got home preference from database.", database.GetPropertyFor(4401, "HomeValue"))
+print("Got car preference from database.", database.GetPropertyFor(4401, "CarValue"))
+print("Got hotel preference from database.", database.GetPropertyFor(4401, "HotelValue"))

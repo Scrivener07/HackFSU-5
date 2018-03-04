@@ -17,4 +17,4 @@ def deleteContent(pfile):
 	pfile.truncate()
 
 poller = Poller()
-poller.WriteAt(0, "9")
+poller.WriteAt(0, "0")
