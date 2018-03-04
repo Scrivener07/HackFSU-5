@@ -81,14 +81,6 @@ class Location(Enum):
 	Hotel = 2
 
 #----------------------------------------------------------
-#----------------------------------------------------------
-
-database = Database()
-database.Deserialize()
-
-
-def Initialize(value):
-	print(value)
 
 def Seed():
 	database.New("Tommy", 7314)
@@ -102,8 +94,11 @@ def Seed():
 	database.New("Nathan", 8975)
 	database.New("Max", 8875)
 
-database.New("Kyle", 4401)
+database = Database()
+database.Deserialize()
+Seed()
 
+database.New("Kyle", 4401)
 database.SetPropertyFor(4401, "HomeValue", Preference.Slow) 
 database.SetPropertyFor(4401, "CarValue", Preference.Fast)
 database.SetPropertyFor(4401, "HotelValue", Preference.On) 
