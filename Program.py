@@ -7,8 +7,7 @@ class Database():
 	FILENAME = "Database.csv"
 
 	def __init__(self):
-		self.defaultProfile = Profile("Dummy", 0000)
-		self.Dictionary[self.defaultProfile.UID] = self.defaultProfile
+		self.New("", 0000)
 	
 	def New(self, name, password):
 		profile = Profile(name, password)
